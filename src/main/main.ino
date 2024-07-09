@@ -1,7 +1,7 @@
 #include <Controllino.h>
 #include "TestsModule.h"
-#include "Led.h"
-#include "InductiveSensor.h"
+#include "MainModule.h"
+
 
 void setup() {
     Serial.begin(9600); // open the serial port at 9600 bps:

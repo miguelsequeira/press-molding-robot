@@ -1,36 +1,26 @@
 #define ENCODER_OPTIMIZE_INTERRUPTS
-#include <Controllino.h>
-#include <Encoder.h>
 #include "TestsModule.h"
-#include "State.h"
-#include "Led.h"
-#include "InductiveSensor.h"
-#include "Encoder.h"
-#include "BrakeActuator.h"
-#include "Stepper.h"
-#include "LinearActuator.h"
-#include "PushPullMotor.h"
-#include "HandController.h"
+#include "Devices.h"
 
 
-Led leds[] = {Led(CONTROLLINO_D8), Led(CONTROLLINO_D9), Led(CONTROLLINO_D10)};
-Led topLed = {Led(CONTROLLINO_D8, CONTROLLINO_D9, CONTROLLINO_D10)};
-Led handRGBLed = {Led(CONTROLLINO_D15, CONTROLLINO_D16, CONTROLLINO_D17)};
+Led ledsTest[] = {Led(CONTROLLINO_D8), Led(CONTROLLINO_D9), Led(CONTROLLINO_D10)};
+Led topLedTest = {Led(CONTROLLINO_D8, CONTROLLINO_D9, CONTROLLINO_D10)};
+Led handRGBLedTest = {Led(CONTROLLINO_D15, CONTROLLINO_D16, CONTROLLINO_D17)};
 
-Led handLeds[] = {Led(CONTROLLINO_D15, CONTROLLINO_D16, CONTROLLINO_D17), Led(CONTROLLINO_D18), Led(CONTROLLINO_D19), Led(CONTROLLINO_D20), Led(CONTROLLINO_D21), Led(CONTROLLINO_D22), Led(CONTROLLINO_D23)};
+Led handLedsTest[] = {Led(CONTROLLINO_D15, CONTROLLINO_D16, CONTROLLINO_D17), Led(CONTROLLINO_D18), Led(CONTROLLINO_D19), Led(CONTROLLINO_D20), Led(CONTROLLINO_D21), Led(CONTROLLINO_D22), Led(CONTROLLINO_D23)};
 
-Stepper stepperYY = Stepper(CONTROLLINO_D3, CONTROLLINO_D4, CONTROLLINO_D5);
-Stepper stepperZZ = Stepper(CONTROLLINO_D0, CONTROLLINO_D1, CONTROLLINO_D2);
-LinearActuator linearActuator = LinearActuator(CONTROLLINO_D6, CONTROLLINO_D7);
-PushPullMotor pushPullMotor = PushPullMotor(CONTROLLINO_R14, CONTROLLINO_R15);
-InductiveSensor sensor = InductiveSensor(CONTROLLINO_A1);
-BrakeActuator brakeActuator = BrakeActuator(CONTROLLINO_R12);
-Encoder encoder = Encoder(CONTROLLINO_IN0, CONTROLLINO_IN1);
+Stepper stepperYYTest = Stepper(CONTROLLINO_D3, CONTROLLINO_D4, CONTROLLINO_D5);
+Stepper stepperZZTest = Stepper(CONTROLLINO_D0, CONTROLLINO_D1, CONTROLLINO_D2);
+LinearActuator linearActuatorTest = LinearActuator(CONTROLLINO_D6, CONTROLLINO_D7);
+PushPullMotor pushpullMotorTest = PushPullMotor(CONTROLLINO_R14, CONTROLLINO_R15);
+InductiveSensor sensorTest = InductiveSensor(CONTROLLINO_A1);
+BrakeActuator brakeActuatorTest = BrakeActuator(CONTROLLINO_R12);
+Encoder encoderTest = Encoder(CONTROLLINO_IN0, CONTROLLINO_IN1);
 
-byte handControllerIns[] = {CONTROLLINO_A10, CONTROLLINO_A11, CONTROLLINO_A12, CONTROLLINO_A13};
-byte handControllerOuts[] = {CONTROLLINO_D13, CONTROLLINO_D14};
-byte handControllerLeds[] = {CONTROLLINO_D18, CONTROLLINO_D19, CONTROLLINO_D20, CONTROLLINO_D21, CONTROLLINO_D22, CONTROLLINO_D23};
-HandController handController = HandController(handControllerIns, handControllerOuts, handControllerLeds);
+byte hCInsTest[] = {CONTROLLINO_A10, CONTROLLINO_A11, CONTROLLINO_A12, CONTROLLINO_A13};
+byte hCOutsTest[] = {CONTROLLINO_D13, CONTROLLINO_D14};
+byte handControllerLedsTest[] = {CONTROLLINO_D18, CONTROLLINO_D19, CONTROLLINO_D20, CONTROLLINO_D21, CONTROLLINO_D22, CONTROLLINO_D23};
+HandController handControllerTest = HandController(hCInsTest, hCOutsTest, handControllerLedsTest);
 
 TestsModule::TestsModule() {
 }
@@ -50,13 +40,13 @@ void TestsModule::runActuators() {
 //    testLinearActuator();
 //    testPushPullMotor();
 //    testBrakeActuator();
-        
+
     testRGBLeds();
     testHandLeds();
 }
 
 
-void TestsModule::runSensors() {   
+void TestsModule::runSensors() {
 //    testInductiveSensor();
 //    testEncoder();
     testHandController();
@@ -65,16 +55,16 @@ void TestsModule::runSensors() {
 }
 
 void TestsModule::disableAll() {
-    brakeActuator.setBrake(HIGH);
-    stepperYY.setEnabled(LOW);
-    stepperZZ.setEnabled(LOW);
-    linearActuator.setEnabled(LOW);
-    pushPullMotor.setEnabled(LOW);
+    brakeActuatorTest.setBrake(HIGH);
+    stepperYYTest.setEnabled(LOW);
+    stepperZZTest.setEnabled(LOW);
+    linearActuatorTest.setEnabled(LOW);
+    pushpullMotorTest.setEnabled(LOW);
 }
 
 
 void TestsModule::testHandController() {
-    byte button = handController.getClosedButton();
+    byte button = handControllerTest.getClosedButton();
      Serial.print("Button Pressed = ");
      Serial.print(button);
      Serial.println();
@@ -82,7 +72,7 @@ void TestsModule::testHandController() {
 
 
 void TestsModule::testHandControllerObj() {
-    Button* button = handController.getClosedButtonObj();
+    Button* button = handControllerTest.getClosedButtonObj();
     if(false) {
         Serial.print("Button Pressed = ");
         Serial.print(button->getCode());
@@ -97,7 +87,7 @@ void TestsModule::testEncoder() {
     long positionRight = -999;
 
    long newLeft, newRight;
-   newLeft = encoder.read();
+   newLeft = encoderTest.read();
    if (newLeft != positionLeft ) {
      Serial.print("Encoder position = ");
      Serial.print(newLeft);
@@ -109,65 +99,65 @@ void TestsModule::testEncoder() {
    if (Serial.available()) {
      Serial.read();
      Serial.println("Reset encoder back to zero");
-     encoder.write(0);
+     encoderTest.write(0);
    }
 }
 
 void TestsModule::testBrakeActuator() {
-    brakeActuator.setBrake(HIGH);
+    brakeActuatorTest.setBrake(HIGH);
     delay(2000);
-    brakeActuator.setBrake(LOW);
+    brakeActuatorTest.setBrake(LOW);
     delay(2000);
 }
 
 void TestsModule::testPushPullMotor() {
-    pushPullMotor.setEnabled(HIGH);
-    pushPullMotor.setDirection(LOW);
+    pushpullMotorTest.setEnabled(HIGH);
+    pushpullMotorTest.setDirection(LOW);
     delay(2000);
-    pushPullMotor.setDirection(HIGH);
+    pushpullMotorTest.setDirection(HIGH);
     delay(2000);
-    pushPullMotor.setEnabled(LOW);
+    pushpullMotorTest.setEnabled(LOW);
     delay(2000);
 }
 
 void TestsModule::testStepperYY() {
 
-    stepperYY.setEnabled(HIGH);
-    stepperYY.setDirection(LOW);
-    stepperYY.setAppliedPower(1);
+    stepperYYTest.setEnabled(HIGH);
+    stepperYYTest.setDirection(LOW);
+    stepperYYTest.setAppliedPower(1);
     delay(2000);
-    stepperYY.setAppliedPower(5);
-    stepperYY.setDirection(HIGH);
+    stepperYYTest.setAppliedPower(5);
+    stepperYYTest.setDirection(HIGH);
     delay(2000);
-    stepperYY.setAppliedPower(0);
-    stepperYY.setEnabled(LOW);
+    stepperYYTest.setAppliedPower(0);
+    stepperYYTest.setEnabled(LOW);
 }
 
 
 void TestsModule::testStepperZZ() {
 
-    stepperZZ.setEnabled(HIGH);
-    stepperZZ.setDirection(LOW);
-    stepperZZ.setAppliedPower(1);
+    stepperZZTest.setEnabled(HIGH);
+    stepperZZTest.setDirection(LOW);
+    stepperZZTest.setAppliedPower(1);
     delay(2000);
-    stepperZZ.setAppliedPower(50);
-    stepperZZ.setDirection(HIGH);
+    stepperZZTest.setAppliedPower(50);
+    stepperZZTest.setDirection(HIGH);
     delay(2000);
-    stepperZZ.setAppliedPower(0);
-    stepperZZ.setEnabled(LOW);
+    stepperZZTest.setAppliedPower(0);
+    stepperZZTest.setEnabled(LOW);
 }
 
 void TestsModule::testLinearActuator() {
 
     delay(2000);
-    linearActuator.setEnabled(HIGH);
-    linearActuator.setDirection(LOW);
+    linearActuatorTest.setEnabled(HIGH);
+    linearActuatorTest.setDirection(LOW);
     delay(2000);
-    linearActuator.setEnabled(HIGH);
-    linearActuator.setDirection(HIGH);
+    linearActuatorTest.setEnabled(HIGH);
+    linearActuatorTest.setDirection(HIGH);
     delay(2000);
 
-    linearActuator.setEnabled(LOW);
+    linearActuatorTest.setEnabled(LOW);
 }
 //
 //void TestsModule::testEncoder() {
@@ -181,11 +171,11 @@ void TestsModule::testLinearActuator() {
 //}
 
 void TestsModule::testInductiveSensor() {
-    if(sensor.isClosed()) {
-        leds[2].on();
+    if(sensorTest.isClosed()) {
+        ledsTest[2].on();
         Serial.println("Object Detected");
     } else {
-        leds[2].off();
+        ledsTest[2].off();
         Serial.println("Object Not Detected");
     }
 }
@@ -193,41 +183,41 @@ void TestsModule::testInductiveSensor() {
 
 void TestsModule::testRGBLeds() {
 
-    topLed.onRGB(HIGH, LOW, LOW);
-    handRGBLed.onRGB(HIGH, LOW, LOW);
+    topLedTest.onRGB(HIGH, LOW, LOW);
+    handRGBLedTest.onRGB(HIGH, LOW, LOW);
     delay(1000);
-    topLed.onRGB(LOW, HIGH, LOW);
-    handRGBLed.onRGB(LOW, HIGH, LOW);
+    topLedTest.onRGB(LOW, HIGH, LOW);
+    handRGBLedTest.onRGB(LOW, HIGH, LOW);
     delay(1000);
-    topLed.onRGB(LOW, LOW, HIGH);
-    handRGBLed.onRGB(LOW, LOW, HIGH);
+    topLedTest.onRGB(LOW, LOW, HIGH);
+    handRGBLedTest.onRGB(LOW, LOW, HIGH);
     delay(1000);
-    topLed.onRGB(HIGH, HIGH, LOW);
-    handRGBLed.onRGB(HIGH, HIGH, LOW);
+    topLedTest.onRGB(HIGH, HIGH, LOW);
+    handRGBLedTest.onRGB(HIGH, HIGH, LOW);
     delay(1000);
-    topLed.onRGB(LOW, HIGH, HIGH);
-    handRGBLed.onRGB(LOW, HIGH, HIGH);
+    topLedTest.onRGB(LOW, HIGH, HIGH);
+    handRGBLedTest.onRGB(LOW, HIGH, HIGH);
     delay(1000);
-    topLed.onRGB(HIGH, LOW, HIGH);
-    handRGBLed.onRGB(HIGH, LOW, HIGH);
+    topLedTest.onRGB(HIGH, LOW, HIGH);
+    handRGBLedTest.onRGB(HIGH, LOW, HIGH);
     delay(1000);
-    topLed.onRGB(HIGH, HIGH, HIGH);
-    handRGBLed.onRGB(HIGH, HIGH, HIGH);
+    topLedTest.onRGB(HIGH, HIGH, HIGH);
+    handRGBLedTest.onRGB(HIGH, HIGH, HIGH);
     delay(1000);
-    topLed.offRGB();
-    handRGBLed.offRGB();
+    topLedTest.offRGB();
+    handRGBLedTest.offRGB();
     delay(1000);
 }
 
 
 void TestsModule::testHandLeds() {
 
-    handLeds[0].onRGB(HIGH, HIGH, HIGH);
+    handLedsTest[0].onRGB(HIGH, HIGH, HIGH);
     delay(1000);
-    handLeds[0].offRGB();
+    handLedsTest[0].offRGB();
     for (int i = 1; i < 7; i++) {
-      handLeds[i].on();
+      handLedsTest[i].on();
       delay(1000);
-      handLeds[i].off();
+      handLedsTest[i].off();
     }
 }
