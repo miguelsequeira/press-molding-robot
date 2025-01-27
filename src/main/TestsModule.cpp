@@ -23,13 +23,13 @@ Stepper stepperYY = Stepper(CONTROLLINO_D3, CONTROLLINO_D4, CONTROLLINO_D5);
 Stepper stepperZZ = Stepper(CONTROLLINO_D0, CONTROLLINO_D1, CONTROLLINO_D2);
 LinearActuator linearActuator = LinearActuator(CONTROLLINO_D6, CONTROLLINO_D7);
 PushPullMotor pushPullMotor = PushPullMotor(CONTROLLINO_R14, CONTROLLINO_R15);
-InductiveSensor sensor = InductiveSensor(CONTROLLINO_A1);
-BrakeActuator brakeActuator = BrakeActuator(CONTROLLINO_R12);
+InductiveSensor sensor = InductiveSensor(CONTROLLINO_A6);
+BrakeActuator brakeActuator = BrakeActuator(CONTROLLINO_R13);
 Encoder encoder = Encoder(CONTROLLINO_IN0, CONTROLLINO_IN1);
 
-byte handControllerIns[] = {CONTROLLINO_A10, CONTROLLINO_A11, CONTROLLINO_A12, CONTROLLINO_A13};
+byte handControllerIns[] = {CONTROLLINO_A9, CONTROLLINO_A10, CONTROLLINO_A11, CONTROLLINO_A12};
 byte handControllerOuts[] = {CONTROLLINO_D13, CONTROLLINO_D14};
-byte handControllerLeds[] = {CONTROLLINO_D18, CONTROLLINO_D19, CONTROLLINO_D20, CONTROLLINO_D21, CONTROLLINO_D22, CONTROLLINO_D23};
+byte handControllerLeds[] = {CONTROLLINO_D15, CONTROLLINO_D16, CONTROLLINO_D17, CONTROLLINO_D18, CONTROLLINO_D19, CONTROLLINO_D20};
 HandController handController = HandController(handControllerIns, handControllerOuts, handControllerLeds);
 
 TestsModule::TestsModule() {
@@ -39,33 +39,37 @@ void TestsModule::run() {
 //
     disableAll();
 
-    //runActuators();
-    //runSensors();
+    // read button direction
+    // apply
+
+
+    runActuators();
+ //   runSensors();
 }
 
 
 void TestsModule::runActuators() {
 //    testStepperYY();
 //    testStepperZZ();
-//    testLinearActuator();
-//    testPushPullMotor();
-//    testBrakeActuator();
+    testLinearActuator();
+    testPushPullMotor();
+    testBrakeActuator();
         
-    testRGBLeds();
-    testHandLeds();
+  //  testRGBLeds();
+  //  testHandLeds();
 }
 
 
 void TestsModule::runSensors() {   
-//    testInductiveSensor();
+    testInductiveSensor();
 //    testEncoder();
-    testHandController();
+  //  testHandController();
     //testHandControllerObj();
 
 }
 
 void TestsModule::disableAll() {
-    brakeActuator.setBrake(HIGH);
+    //brakeActuator.setBrake(HIGH);
     stepperYY.setEnabled(LOW);
     stepperZZ.setEnabled(LOW);
     linearActuator.setEnabled(LOW);
@@ -149,10 +153,10 @@ void TestsModule::testStepperZZ() {
     stepperZZ.setEnabled(HIGH);
     stepperZZ.setDirection(LOW);
     stepperZZ.setAppliedPower(1);
-    delay(2000);
+    delay(1000);
     stepperZZ.setAppliedPower(50);
     stepperZZ.setDirection(HIGH);
-    delay(2000);
+    delay(1000);
     stepperZZ.setAppliedPower(0);
     stepperZZ.setEnabled(LOW);
 }
@@ -194,28 +198,28 @@ void TestsModule::testInductiveSensor() {
 void TestsModule::testRGBLeds() {
 
     topLed.onRGB(HIGH, LOW, LOW);
-    handRGBLed.onRGB(HIGH, LOW, LOW);
+    //handRGBLed.onRGB(HIGH, LOW, LOW);
     delay(1000);
     topLed.onRGB(LOW, HIGH, LOW);
-    handRGBLed.onRGB(LOW, HIGH, LOW);
+    //handRGBLed.onRGB(LOW, HIGH, LOW);
     delay(1000);
     topLed.onRGB(LOW, LOW, HIGH);
-    handRGBLed.onRGB(LOW, LOW, HIGH);
+    //handRGBLed.onRGB(LOW, LOW, HIGH);
     delay(1000);
     topLed.onRGB(HIGH, HIGH, LOW);
-    handRGBLed.onRGB(HIGH, HIGH, LOW);
+    //handRGBLed.onRGB(HIGH, HIGH, LOW);
     delay(1000);
     topLed.onRGB(LOW, HIGH, HIGH);
-    handRGBLed.onRGB(LOW, HIGH, HIGH);
+    //handRGBLed.onRGB(LOW, HIGH, HIGH);
     delay(1000);
     topLed.onRGB(HIGH, LOW, HIGH);
-    handRGBLed.onRGB(HIGH, LOW, HIGH);
+    //handRGBLed.onRGB(HIGH, LOW, HIGH);
     delay(1000);
     topLed.onRGB(HIGH, HIGH, HIGH);
-    handRGBLed.onRGB(HIGH, HIGH, HIGH);
+    //handRGBLed.onRGB(HIGH, HIGH, HIGH);
     delay(1000);
     topLed.offRGB();
-    handRGBLed.offRGB();
+    //handRGBLed.offRGB();
     delay(1000);
 }
 
