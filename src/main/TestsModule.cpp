@@ -28,43 +28,43 @@ BrakeActuator brakeActuator = BrakeActuator(CONTROLLINO_R13);
 Encoder encoder = Encoder(CONTROLLINO_IN0, CONTROLLINO_IN1);
 
 byte handControllerIns[] = {CONTROLLINO_A9, CONTROLLINO_A10, CONTROLLINO_A11, CONTROLLINO_A12};
-byte handControllerOuts[] = {CONTROLLINO_D13, CONTROLLINO_D14};
-byte handControllerLeds[] = {CONTROLLINO_D15, CONTROLLINO_D16, CONTROLLINO_D17, CONTROLLINO_D18, CONTROLLINO_D19, CONTROLLINO_D20};
-HandController handController = HandController(handControllerIns, handControllerOuts, handControllerLeds);
+byte handControllerLeds[] = {CONTROLLINO_D15, CONTROLLINO_D16, CONTROLLINO_D17, CONTROLLINO_D21, CONTROLLINO_D18, CONTROLLINO_D19, CONTROLLINO_D20};
+HandController handController = HandController(handControllerIns, handControllerLeds);
+
 
 TestsModule::TestsModule() {
 }
 
 void TestsModule::run() {
 //
-    disableAll();
+   // disableAll();
 
     // read button direction
     // apply
 
 
-    runActuators();
- //   runSensors();
+//    runActuators();
+    runSensors();
 }
 
 
 void TestsModule::runActuators() {
-//    testStepperYY();
+    testStepperYY();
 //    testStepperZZ();
-    testLinearActuator();
-    testPushPullMotor();
-    testBrakeActuator();
-        
+//    testLinearActuator();
+//    testPushPullMotor();
+//    testBrakeActuator();
+//
   //  testRGBLeds();
   //  testHandLeds();
 }
 
 
 void TestsModule::runSensors() {   
-    testInductiveSensor();
+    //testInductiveSensor();
 //    testEncoder();
   //  testHandController();
-    //testHandControllerObj();
+    testHandControllerObj();
 
 }
 
@@ -86,13 +86,37 @@ void TestsModule::testHandController() {
 
 
 void TestsModule::testHandControllerObj() {
-    Button* button = handController.getClosedButtonObj();
-    if(false) {
-        Serial.print("Button Pressed = ");
-        Serial.print(button->getCode());
-        Serial.println();
+    handController.updateButtonStates();
+    Button *button = handController.getClosedButtonObj();
+    if(button != NULL && button->isPressed) {
+        button->setLedOn();
+
+        switch (button->getCode()) {
+            case 0: topLed.onRGB(LOW, LOW, LOW);
+                    stepperYY.setEnabled(LOW);
+                    break;
+            case 1:
+                    stepperYY.setEnabled(HIGH);
+                    stepperYY.setDirection(LOW);
+                    stepperYY.setAppliedPower(1);
+                    break;
+            case 2: topLed.onRGB(LOW, LOW, LOW);
+                    stepperYY.setEnabled(LOW);
+                    break;
+            case 4: topLed.onRGB(LOW, LOW, LOW);
+                    stepperYY.setEnabled(LOW);
+                    break;
+            case 5:
+                    stepperYY.setEnabled(HIGH);
+                    stepperYY.setDirection(HIGH);
+                    stepperYY.setAppliedPower(1);
+                    break;
+            case 6: topLed.onRGB(HIGH, HIGH, HIGH);
+                    stepperYY.setEnabled(LOW);
+                    break;
+        }
     } else {
-        Serial.print("Button NOT Pressed");
+        stepperYY.setEnabled(LOW);
     }
 }
 
