@@ -1,5 +1,7 @@
 #include <Controllino.h>
 #include "PushPullMotor.h"
+
+
 PushPullMotor::PushPullMotor(byte forwardPin, byte backwardPin) {
   this->forwardPin = forwardPin;
   this->backwardPin = backwardPin;
@@ -8,6 +10,7 @@ PushPullMotor::PushPullMotor(byte forwardPin, byte backwardPin) {
 void PushPullMotor::init() {
   pinMode(forwardPin, OUTPUT);
   pinMode(backwardPin, OUTPUT);
+  this->direction = HIGH;
 }
 
 void PushPullMotor::setEnabled(int enable) {
@@ -33,4 +36,13 @@ void PushPullMotor::setDirection(int direction) {
         digitalWrite(forwardPin, HIGH);
         digitalWrite(backwardPin, LOW);  
     }
+}
+
+void PushPullMotor::changePosition() {
+    if(this->direction==LOW) {
+        setDirection(HIGH);
+    } else {
+        setDirection(LOW);
+    }
+    delay(1000);
 }

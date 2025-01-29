@@ -15,16 +15,6 @@
  *   * Button 3 (Start/Stop): 24V DC when pressed
  */
 
-#define BTN0_NOT_PRESSED    100
-#define BTN1_EMERGENCY      101
-#define BTN2_BLOCK_TRACK    102
-#define BTN3_GRAB_MOLD      103
-#define BTN4_ROTATE         104
-#define BTN5_FORWARD        105
-#define BTN6_BACKWARD       106
-#define BTN7_UP             107
-#define BTN8_DOWN           108
-
 // LED Pins
 #define LED_ROTATION CONTROLLINO_D15
 #define LED_Y_FWD CONTROLLINO_D16
@@ -57,9 +47,6 @@
 unsigned long rgbCycleStart = 0;
 uint8_t currentRgbLed = 0;
 
-
-int buttonsCodes[] = {BTN1_EMERGENCY, BTN2_BLOCK_TRACK, BTN3_GRAB_MOLD, BTN4_ROTATE, BTN5_FORWARD, BTN6_BACKWARD, BTN7_UP, BTN8_DOWN};
-
 HandController::HandController(byte pinIn[], byte pinLed[]) {
     this->pinIn = pinIn;
     this->pinLed = pinLed;
@@ -90,7 +77,7 @@ HandController::HandController(byte pinIn[], byte pinLed[]) {
         but[i] = Button(i, pinIn[i], pinLed[i]);
         but[6-i] = Button((6-i), pinIn[i], pinLed[6-i]);
     }
-    but[3] = Button(buttonsCodes[3], pinIn[3], pinLed[3]);
+    but[3] = Button(3, pinIn[3], pinLed[3]);
 
     // Initialize button states
     for (int i = 0; i < 7; i++) {
@@ -105,66 +92,17 @@ HandController::HandController(byte pinIn[], byte pinLed[]) {
     this->buttons = but;
 }
 
-Button* HandController::getClosedButtonObj() {
-    int counter = 0;
-//    int counterButtonsPressed = 0;
-    //updateButtonStates();
-    //updateLEDs();
-    //Button *buttonSelected;
+Button* HandController::getClosedButton() {
+
     for(int i=0; i<8; i++) {
-
-            if(buttons[i].isPressed) {
-                //Serial.println( buttons[i].position);
-                return &buttons[i];
-            } else {
-                buttons[i].setLedOff();
-
-            }
-            //Serial.println( buttons[i]->isClosed());
-
-        }
-    return &buttons[0];
-
-
-//    if(counterButtonsPressed > 1 || counterButtonsPressed == 0) {
-
-  //  }
-
-    return &buttons[0];
-}
-
-
-
-
-int HandController::getClosedButton() {
-
-    int threshold = 358;
-    int counter = 0;
-    int counterButtonsPressed = 0;
-    int buttonSelected = 0;
-
-    // emergency button (priority)
-    Serial.print(analogRead(pinIn[0]));
-    Serial.println();
-    if(analogRead(pinIn[0]) > threshold) {
-        return BTN1_EMERGENCY;
-    }
-
-    for(int i=0; i<4; i++) {
-        for(int j=0; j<2; j++) {
-            if(analogRead(pinIn[i]) > threshold) {
-                buttonSelected = buttonsCodes[counter];
-                counterButtonsPressed++;
-            }
-            counter++;
+        if(buttons[i].isPressed) {
+            return &buttons[i];
+        } else {
+            buttons[i].setLedOff();
         }
     }
 
-    if(counterButtonsPressed > 1 || counterButtonsPressed == 0) {
-        return BTN0_NOT_PRESSED;
-    }
-
-    return buttonSelected;
+    return &buttons[0];
 }
 
 

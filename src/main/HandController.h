@@ -17,8 +17,7 @@ class HandController {
 
     void init();
 
-    int getClosedButton();
-    Button* getClosedButtonObj();
+    Button* getClosedButton();
 
     void checkPinA9Buttons();
     void checkPinA10Buttons();

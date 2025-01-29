@@ -15,5 +15,6 @@ class PushPullMotor {
     void init();
     void setEnabled(int enabled);
     void setDirection(int direction);
+    void changePosition();
 };
 #endif
