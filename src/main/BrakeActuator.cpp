@@ -10,16 +10,23 @@ void BrakeActuator::init() {
   setBrake(HIGH);
 }
 
-void BrakeActuator::setBrake(int value) {
+void BrakeActuator::setBrake(byte value) {
     if(value == HIGH) {
-        this->brake = LOW;
-        digitalWrite(pin, LOW);
+        this->brake = true;
     } else {
-        this->brake = HIGH;
-        digitalWrite(pin, HIGH);
+        this->brake = false;
     }
+    digitalWrite(pin, value);
 }
 
-int BrakeActuator::isBraked() {
-    return brake;
+void BrakeActuator::changeBrakeState() {
+  if(isBraked()) {
+    setBrake(LOW);
+  } else {
+   setBrake(HIGH);
+  }
+}
+
+bool BrakeActuator::isBraked(){
+  return this->brake;
 }

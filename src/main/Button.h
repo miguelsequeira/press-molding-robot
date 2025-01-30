@@ -1,12 +1,14 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 #include <Arduino.h>
+#include "Led.h"
+
 class Button {
 
   private:
     byte pinIn, pinOut1, pinOut2, pinLed;
     byte out1Value, out2Value;
-
+    Led led;
 
 
 

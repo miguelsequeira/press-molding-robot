@@ -1,4 +1,8 @@
 #include "Led.h"
+
+Led::Led() {
+}
+
 Led::Led(byte pin) {
   this->pin = pin;
   init();

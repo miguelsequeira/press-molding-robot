@@ -8,5 +8,6 @@ class RunModule {
 
     void run();
     void disableAll();
+    void startup();
 };
 #endif

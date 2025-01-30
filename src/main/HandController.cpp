@@ -39,7 +39,7 @@
 #define LED_CYCLE_TIME 200        // 200ms per RGB LED
 #define SAMPLE_INTERVAL 1         // 1ms between samples
 #define ADC_THRESHOLD_24V 800     // Threshold for 24V detection (>20V)
-#define ADC_THRESHOLD_12V_MIN 300 // Threshold for 12V detection (>10V)
+#define ADC_THRESHOLD_12V_MIN 200 // Threshold for 12V detection (>10V)
 #define ADC_THRESHOLD_12V_MAX 600 // Maximum threshold for 12V detection (<15V)
 #define ADC_THRESHOLD_LOW 200     // Threshold for LOW state (<5V)
 #define SAMPLES_FOR_PRESS 100     // Number of samples to confirm button press
@@ -78,6 +78,7 @@ HandController::HandController(byte pinIn[], byte pinLed[]) {
         but[6-i] = Button((6-i), pinIn[i], pinLed[6-i]);
     }
     but[3] = Button(3, pinIn[3], pinLed[3]);
+    but[7] = Button(7, pinIn[7], pinLed[7]);
 
     // Initialize button states
     for (int i = 0; i < 7; i++) {
@@ -102,7 +103,7 @@ Button* HandController::getClosedButton() {
         }
     }
 
-    return &buttons[0];
+    return NULL;
 }
 
 
@@ -222,30 +223,6 @@ void HandController::updateButtonStates() {
     checkPinA12Buttons();
 }
 
-void HandController::updateLEDs() {
-
-    // Update individual LEDs based on button states
-    digitalWrite(LED_ROTATION, buttons[0].isPressed);
-    digitalWrite(LED_Y_FWD, buttons[1].isPressed);
-    digitalWrite(LED_Z_UP, buttons[2].isPressed);
-    digitalWrite(LED_PICK, buttons[4].isPressed);
-    digitalWrite(LED_Y_BACK, buttons[5].isPressed);
-    digitalWrite(LED_Z_DOWN, buttons[6].isPressed);
-
-    // Update RGB LED for Start/Stop button
-    if (buttons[3].isPressed) {
-        unsigned long currentTime = millis();
-        if (currentTime - rgbCycleStart >= LED_CYCLE_TIME) {
-            rgbCycleStart = currentTime;
-            currentRgbLed = (currentRgbLed + 1) % 3;
-        }
-
-        digitalWrite(LED_START_R, currentRgbLed == 0);
-        digitalWrite(LED_START_G, currentRgbLed == 1);
-        digitalWrite(LED_START_B, currentRgbLed == 2);
-    } else {
-        digitalWrite(LED_START_R, LOW);
-        digitalWrite(LED_START_G, LOW);
-        digitalWrite(LED_START_B, LOW);
-    }
+void HandController::setButtonLedOn(byte button) {
+  buttons[button].setLedOn();
 }

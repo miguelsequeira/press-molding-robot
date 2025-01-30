@@ -4,14 +4,15 @@
 class BrakeActuator {
 
   private:
-    int brake;
+    bool brake;
     byte pin;
 
   public:
     BrakeActuator(byte pin);
 
     void init();
-    void setBrake(int value);
-    int isBraked();
+    void setBrake(byte value);
+    bool isBraked();
+    void changeBrakeState();
 };
 #endif

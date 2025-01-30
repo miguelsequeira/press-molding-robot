@@ -25,6 +25,6 @@ class HandController {
     void checkPinA12Buttons();
 
     void updateButtonStates();
-    void updateLEDs();
+    void setButtonLedOn(byte button);
 };
 #endif

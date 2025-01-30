@@ -11,7 +11,7 @@ void setup() {
     // In service
     digitalWrite(CONTROLLINO_R0, machineOn); // Security Contactor
     digitalWrite(CONTROLLINO_R1, machineOn); // Light/Fan Relay
-
+    module.startup();
 }
 
 void loop() {

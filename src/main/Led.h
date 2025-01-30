@@ -10,6 +10,7 @@ class Led {
     
   public:
     // Setup pin LED and call init()
+    Led();
     Led(byte pin);
     Led(byte pinR, byte pinG, byte pinB);
     // Setup the pin led as OUTPUT
