@@ -11,7 +11,6 @@ private:
     byte directionPin;
     byte pulsePin;
     int speed;
-    int appliedPower;
     void init();
     //ini  direction;
     
@@ -20,10 +19,8 @@ public:
     // void init();
     void setEnabled(int enabled);
     void setDirection(int direction);
-    void setAppliedPower(int appliedPower);
     void setSpeed(int speed);
     int getSpeed();
-    int getAppliedPower();
 };
 
 #endif

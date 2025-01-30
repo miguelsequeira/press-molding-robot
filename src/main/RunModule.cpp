@@ -20,6 +20,8 @@
 #define BTN_RIGHT             5
 #define BTN_DOWN              6
 
+#define ZZ_SPEED    60
+#define YY_SPEED    9000
 
 Led leds[] = {Led(CONTROLLINO_D8), Led(CONTROLLINO_D9), Led(CONTROLLINO_D10)};
 Led topLed = {Led(CONTROLLINO_D8, CONTROLLINO_D9, CONTROLLINO_D10)};
@@ -67,12 +69,12 @@ void RunModule::run() {
             case BTN_LEFT:
                 stepperYY.setEnabled(HIGH);
                 stepperYY.setDirection(LOW);
-                stepperYY.setAppliedPower(1);
+                stepperYY.setSpeed(YY_SPEED);
                 break;
             case BTN_UP:
                 stepperZZ.setEnabled(HIGH);
                 stepperZZ.setDirection(HIGH);
-                stepperZZ.setAppliedPower(1);
+                stepperZZ.setSpeed(ZZ_SPEED);
                 break;
             case BTN_TRACK_LOCK:
                 if(currBtn != prevBtn) {
@@ -88,12 +90,12 @@ void RunModule::run() {
             case BTN_RIGHT:
                 stepperYY.setEnabled(HIGH);
                 stepperYY.setDirection(HIGH);
-                stepperYY.setAppliedPower(1);
+                stepperYY.setSpeed(YY_SPEED);
                 break;
             case BTN_DOWN:
                 stepperZZ.setEnabled(HIGH);
                 stepperZZ.setDirection(LOW);
-                stepperZZ.setAppliedPower(1);
+                stepperZZ.setSpeed(ZZ_SPEED);
                 break;
             default:
                 disableAll();
@@ -114,8 +116,8 @@ void RunModule::run() {
 
 void RunModule::disableAll() {
     brakeRotationActuator.setBrake(LOW);
-    stepperYY.setAppliedPower(0);
-    stepperZZ.setAppliedPower(0);
+    stepperYY.setSpeed(0);
+    stepperZZ.setSpeed(0);
     linearActuator.setEnabled(LOW);
     pushPullMotor.setEnabled(LOW);
 }

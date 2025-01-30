@@ -5,7 +5,7 @@ Stepper::Stepper(byte enablePin, byte directionPin, byte pulsePin) {
     this->enablePin = enablePin;
     this->directionPin = directionPin;
     this->pulsePin = pulsePin;
-    this->appliedPower = 0;
+    this->speed = 0;
     init();
     
     // Set default speeds
@@ -31,15 +31,16 @@ void Stepper::setDirection(int direction) {
     digitalWrite(directionPin, direction);
 }
 
-void Stepper::setAppliedPower(int appliedPower) {
-    if (appliedPower > 0) {
+void Stepper::setSpeed(int speed) {
+    this->speed = speed;
+    if (speed > 0) {
         // Calculate pulse delay based on speed (RPM)
         // Steps per revolution = 400
         // RPM to steps per second = (RPM * 400) / 60
         // Microseconds per step = 1000000 / steps per second
         unsigned long stepsPerSecond = (speed * 400UL) / 60;
         unsigned long microsPerStep = 1000000UL / stepsPerSecond;
-        
+
         // Generate a step pulse
         digitalWrite(pulsePin, HIGH);
         delayMicroseconds(microsPerStep / 2);
@@ -48,14 +49,6 @@ void Stepper::setAppliedPower(int appliedPower) {
     }
 }
 
-void Stepper::setSpeed(int speed) {
-    this->speed = speed;
-}
-
 int Stepper::getSpeed() {
     return speed;
-}
-
-int Stepper::getAppliedPower() {
-    return digitalRead(pulsePin);
 }
