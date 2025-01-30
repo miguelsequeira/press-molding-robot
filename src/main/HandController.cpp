@@ -95,6 +95,18 @@ HandController::HandController(byte pinIn[], byte pinLed[]) {
     this->buttons = but;
 }
 
+int HandController::getNumberOfClosedButtons() {
+    int counter = 0;
+    for(int i=0; i<7; i++) {
+        if(buttons[i].isPressed) {
+            counter = counter+1;
+        }
+    }
+    return counter;
+}
+
+
+
 Button* HandController::getClosedButton() {
 
     for(int i=0; i<8; i++) {

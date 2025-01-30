@@ -3,6 +3,13 @@
 Button::Button() {
 }
 
+Button::Button(int position, byte pinIn) {
+  this->position = position;
+  this->pinIn = pinIn;
+  //init();
+  setLedOff();
+}
+
 Button::Button(int position, byte pinIn, byte pinLed) {
   this->position = position;
   this->pinIn = pinIn;
@@ -12,8 +19,7 @@ Button::Button(int position, byte pinIn, byte pinLed) {
 }
 
 void Button::init() {
-//  pinMode(pinIn, INPUT);
-//  pinMode(pinLed, OUTPUT);
+  pinMode(pinIn, INPUT);
 }
 
 bool Button::isClosed() {

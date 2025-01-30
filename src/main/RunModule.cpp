@@ -2,6 +2,7 @@
 #include <Controllino.h>
 #include <Encoder.h>
 #include "RunModule.h"
+#include "Led.h"
 #include "State.h"
 #include "InductiveSensor.h"
 #include "Encoder.h"
@@ -21,11 +22,11 @@
 #define BTN_DOWN              6
 
 #define ZZ_SPEED    60
-#define YY_SPEED    9000
+#define YY_SPEED    32000
 
 Led leds[] = {Led(CONTROLLINO_D8), Led(CONTROLLINO_D9), Led(CONTROLLINO_D10)};
 Led topLed = {Led(CONTROLLINO_D8, CONTROLLINO_D9, CONTROLLINO_D10)};
-Led handRGBLed = {Led(CONTROLLINO_D15, CONTROLLINO_D16, CONTROLLINO_D17)};
+Led handRGBLed = {Led(CONTROLLINO_D21, CONTROLLINO_D22, CONTROLLINO_D23)};
 
 Led handLeds[] = {Led(CONTROLLINO_D15, CONTROLLINO_D16, CONTROLLINO_D17), Led(CONTROLLINO_D18), Led(CONTROLLINO_D19), Led(CONTROLLINO_D20), Led(CONTROLLINO_D21), Led(CONTROLLINO_D22), Led(CONTROLLINO_D23)};
 
@@ -33,7 +34,11 @@ Stepper stepperYY = Stepper(CONTROLLINO_D3, CONTROLLINO_D4, CONTROLLINO_D5);
 Stepper stepperZZ = Stepper(CONTROLLINO_D0, CONTROLLINO_D1, CONTROLLINO_D2);
 LinearActuator linearActuator = LinearActuator(CONTROLLINO_D6, CONTROLLINO_D7);
 PushPullMotor pushPullMotor = PushPullMotor(CONTROLLINO_R14, CONTROLLINO_R15);
-InductiveSensor sensor = InductiveSensor(CONTROLLINO_A6);
+InductiveSensor sensorLeft = InductiveSensor(CONTROLLINO_A1);
+InductiveSensor sensorRight = InductiveSensor(CONTROLLINO_A2);
+InductiveSensor sensorUp = InductiveSensor(CONTROLLINO_A4);
+InductiveSensor sensorDown= InductiveSensor(CONTROLLINO_A3);
+InductiveSensor sensorMold = InductiveSensor(CONTROLLINO_A6);
 BrakeActuator brakeMoldActuator = BrakeActuator(CONTROLLINO_R13);
 BrakeActuator brakeRotationActuator = BrakeActuator(CONTROLLINO_R11);
 Encoder encoder = Encoder(CONTROLLINO_IN0, CONTROLLINO_IN1);
@@ -48,6 +53,7 @@ RunModule::RunModule() {
 
 byte currBtn = 0;
 byte prevBtn = 0;
+Button *button;
 
 void RunModule::run() {
 
@@ -55,10 +61,13 @@ void RunModule::run() {
     // apply
 
     handController.updateButtonStates();
-    Button *button = handController.getClosedButton();
+
+    if(handController.getNumberOfClosedButtons() <= 1) {
+        button = handController.getClosedButton();
+    }
 
     if(button != NULL && button->isPressed) {
-        button->setLedOn();
+          button->setLedOn();
 
         currBtn = button->getCode();
 
@@ -67,17 +76,23 @@ void RunModule::run() {
                 brakeRotationActuator.setBrake(HIGH);
                 break;
             case BTN_LEFT:
-                stepperYY.setEnabled(HIGH);
-                stepperYY.setDirection(LOW);
-                stepperYY.setSpeed(YY_SPEED);
+                if(!sensorLeft.isClosed()) {
+                    stepperYY.setEnabled(HIGH);
+                    stepperYY.setDirection(HIGH);
+                    stepperYY.setSpeed(YY_SPEED);
+                }
                 break;
             case BTN_UP:
-                stepperZZ.setEnabled(HIGH);
-                stepperZZ.setDirection(HIGH);
-                stepperZZ.setSpeed(ZZ_SPEED);
+                if(!sensorUp.isClosed()) {
+                    stepperZZ.setEnabled(HIGH);
+                    stepperZZ.setDirection(HIGH);
+                    stepperZZ.setSpeed(ZZ_SPEED);
+                }
                 break;
             case BTN_TRACK_LOCK:
                 if(currBtn != prevBtn) {
+                    topLed.onRGB(HIGH, LOW, HIGH);
+                    handRGBLed.onRGB(HIGH, HIGH, LOW);
                     pushPullMotor.setEnabled(HIGH);
                     pushPullMotor.changePosition();
                 }
@@ -88,14 +103,18 @@ void RunModule::run() {
                 }
                 break;
             case BTN_RIGHT:
-                stepperYY.setEnabled(HIGH);
-                stepperYY.setDirection(HIGH);
-                stepperYY.setSpeed(YY_SPEED);
+                if(!sensorRight.isClosed()) {
+                    stepperYY.setEnabled(HIGH);
+                    stepperYY.setDirection(LOW);
+                    stepperYY.setSpeed(YY_SPEED);
+                }
                 break;
             case BTN_DOWN:
-                stepperZZ.setEnabled(HIGH);
-                stepperZZ.setDirection(LOW);
-                stepperZZ.setSpeed(ZZ_SPEED);
+                if(!sensorDown.isClosed()) {
+                    stepperZZ.setEnabled(HIGH);
+                    stepperZZ.setDirection(LOW);
+                    stepperZZ.setSpeed(ZZ_SPEED);
+                }
                 break;
             default:
                 disableAll();
@@ -108,6 +127,14 @@ void RunModule::run() {
 
     if(!brakeMoldActuator.isBraked()) {
         handController.setButtonLedOn(BTN_GRAB_MOLD);
+    }
+
+    if(pushPullMotor.getDirection() == HIGH) {
+        topLed.onRGB(LOW, HIGH, LOW);
+        handRGBLed.onRGB(LOW, HIGH,LOW);
+    } else {
+        topLed.onRGB(HIGH, LOW, LOW );
+        handRGBLed.onRGB(HIGH, LOW, LOW);
     }
 
     prevBtn = currBtn;

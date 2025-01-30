@@ -9,5 +9,6 @@ class RunModule {
     void run();
     void disableAll();
     void startup();
+        void testRGBLeds();
 };
 #endif

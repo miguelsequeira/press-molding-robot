@@ -38,6 +38,10 @@ void PushPullMotor::setDirection(int direction) {
     }
 }
 
+int PushPullMotor::getDirection() {
+    return this->direction;
+}
+
 void PushPullMotor::changePosition() {
     if(this->direction==LOW) {
         setDirection(HIGH);
@@ -46,4 +50,5 @@ void PushPullMotor::changePosition() {
         setDirection(LOW);
         delay(2000);
     }
+    this->setEnabled(LOW);
 }
