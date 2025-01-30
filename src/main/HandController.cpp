@@ -44,6 +44,8 @@
 #define ADC_THRESHOLD_LOW 200     // Threshold for LOW state (<5V)
 #define SAMPLES_FOR_PRESS 100     // Number of samples to confirm button press
 
+#define COUNTER 100
+
 unsigned long rgbCycleStart = 0;
 uint8_t currentRgbLed = 0;
 
@@ -125,13 +127,13 @@ void HandController::checkPinA9Buttons() {
     buttons[6].sampleCount++;
 
     if (buttons[0].sampleCount >= SAMPLES_FOR_PRESS) {
-        buttons[0].isPressed = (buttons[0].signalCount >= 1);
+        buttons[0].isPressed = (buttons[0].signalCount >= COUNTER);
         buttons[0].signalCount = 0;
         buttons[0].sampleCount = 0;
     }
 
     if (buttons[6].sampleCount >= SAMPLES_FOR_PRESS) {
-        buttons[6].isPressed = (buttons[6].signalCount >= 1);
+        buttons[6].isPressed = (buttons[6].signalCount >= COUNTER);
         buttons[6].signalCount = 0;
         buttons[6].sampleCount = 0;
     }
@@ -155,13 +157,13 @@ void HandController::checkPinA10Buttons() {
     buttons[5].sampleCount++;
 
     if (buttons[1].sampleCount >= SAMPLES_FOR_PRESS) {
-        buttons[1].isPressed = (buttons[1].signalCount >= 1);
+        buttons[1].isPressed = (buttons[1].signalCount >= COUNTER);
         buttons[1].signalCount = 0;
         buttons[1].sampleCount = 0;
     }
 
     if (buttons[5].sampleCount >= SAMPLES_FOR_PRESS) {
-        buttons[5].isPressed = (buttons[5].signalCount >= 1);
+        buttons[5].isPressed = (buttons[5].signalCount >= COUNTER);
         buttons[5].signalCount = 0;
         buttons[5].sampleCount = 0;
     }
@@ -185,13 +187,13 @@ void HandController::checkPinA11Buttons() {
     buttons[4].sampleCount++;
 
     if (buttons[2].sampleCount >= SAMPLES_FOR_PRESS) {
-        buttons[2].isPressed = (buttons[2].signalCount >= 1);
+        buttons[2].isPressed = (buttons[2].signalCount >= COUNTER);
         buttons[2].signalCount = 0;
         buttons[2].sampleCount = 0;
     }
 
     if (buttons[4].sampleCount >= SAMPLES_FOR_PRESS) {
-        buttons[4].isPressed = (buttons[4].signalCount >= 1);
+        buttons[4].isPressed = (buttons[4].signalCount >= COUNTER);
         buttons[4].signalCount = 0;
         buttons[4].sampleCount = 0;
     }
@@ -209,7 +211,7 @@ void HandController::checkPinA12Buttons() {
     buttons[3].sampleCount++;
 
     if (buttons[3].sampleCount >= SAMPLES_FOR_PRESS) {
-        buttons[3].isPressed = (buttons[3].signalCount >= 1);
+        buttons[3].isPressed = (buttons[3].signalCount >= COUNTER);
         buttons[3].signalCount = 0;
         buttons[3].sampleCount = 0;
     }
