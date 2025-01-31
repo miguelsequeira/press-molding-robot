@@ -175,8 +175,11 @@ void RunModule::run() {
         handRGBLed.onRGB(HIGH, LOW, LOW);
     }
 
-    if(sensorMold.isClosed()) {
-		currentTime = millis();
+    if(sensorMold.isClosed() && !brakeMoldActuator.isBraked()) {
+      		topLed.onRGB(HIGH, HIGH, LOW);
+			handRGBLed.onRGB(HIGH, HIGH, HIGH);
+    } else if(sensorMold.isClosed()) {
+        currentTime = millis();
 		if(currentTime - previousTime >= LED_CYCLE_TIME) {
 			previousTime = currentTime;
 			if (ledBlinkState == LOW) {
@@ -189,11 +192,7 @@ void RunModule::run() {
       			handRGBLed.offRGB();
 			}
         }
-
-    } else {
-      isBlinking = false;
-    }
-
+	}
     prevBtn = currBtn;
 }
 
@@ -209,6 +208,7 @@ void RunModule::disableAll() {
 
 void RunModule::startup() {
 //  	onOffButton.init();
+	brakeRotationActuator.setBrake(LOW);
     topLed.onRGB(HIGH, LOW, HIGH);
     handRGBLed.onRGB(HIGH, HIGH, LOW);
     stepperYY.setEnabled(HIGH);
