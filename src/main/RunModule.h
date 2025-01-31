@@ -10,5 +10,7 @@ class RunModule {
     void disableAll();
     void startup();
         void testRGBLeds();
+        void turnAllOn();
+        void turnAllOff();
 };
 #endif

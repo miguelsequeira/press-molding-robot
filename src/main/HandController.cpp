@@ -240,3 +240,6 @@ void HandController::updateButtonStates() {
 void HandController::setButtonLedOn(byte button) {
   buttons[button].setLedOn();
 }
+void HandController::setButtonLedOff(byte button) {
+  buttons[button].setLedOff();
+}

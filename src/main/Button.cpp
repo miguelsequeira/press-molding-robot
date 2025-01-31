@@ -40,3 +40,8 @@ void Button::setLedOff() {
 int Button::getCode() {
     return position;
 }
+
+void Button::updateState() {
+    int value = digitalRead(pinIn);
+    isPressed = (value > 0);
+}

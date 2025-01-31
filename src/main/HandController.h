@@ -26,6 +26,7 @@ class HandController {
 
     void updateButtonStates();
     void setButtonLedOn(byte button);
+    void setButtonLedOff(byte button);
     int getNumberOfClosedButtons();
 };
 #endif

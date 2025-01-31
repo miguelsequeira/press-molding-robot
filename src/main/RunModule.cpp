@@ -47,33 +47,63 @@ byte handControllerIns[] = {CONTROLLINO_A9, CONTROLLINO_A10, CONTROLLINO_A11, CO
 byte handControllerLeds[] = {CONTROLLINO_D15, CONTROLLINO_D16, CONTROLLINO_D17, CONTROLLINO_D21, CONTROLLINO_D18, CONTROLLINO_D19, CONTROLLINO_D20};
 HandController handController = HandController(handControllerIns, handControllerLeds);
 
+Button onOffButton = Button(7, CONTROLLINO_I17);
+
 
 RunModule::RunModule() {
+
 }
 
-byte currBtn = 0;
-byte prevBtn = 0;
+int currBtn = 0;
+int prevBtn = 0;
 Button *button;
+bool isMoldBraked = false;
 
 void RunModule::run() {
+////
+//  	onOffButton.updateState();
+//
+//    if(onOffButton.isClosed() ) {
+//    	// In service
+//    	digitalWrite(CONTROLLINO_R0, machineOn); // Security Contactor
+//    	digitalWrite(CONTROLLINO_R1, machineOn); // L
+////        turnAllOn();
+//    }
+//
+//    if(!onOffButton.isClosed() ) {
+//        machineOn = LOW;
+//
+//    	// In service
+//    	digitalWrite(CONTROLLINO_R0, machineOn); // Security Contactor
+//    	digitalWrite(CONTROLLINO_R1, machineOn); // L
+////        turnAllOff();
+//        return;
+//    }
+//
+//    if(machineOn == LOW) {
+////      turnAllOff();
+//      return;
+//    }
 
     // read button direction
     // apply
 
     handController.updateButtonStates();
+    button = handController.getClosedButton();
 
-    if(handController.getNumberOfClosedButtons() <= 1) {
-        button = handController.getClosedButton();
-    }
 
     if(button != NULL && button->isPressed) {
-          button->setLedOn();
+        button->setLedOn();
 
         currBtn = button->getCode();
+        if(currBtn != prevBtn) {
+          disableAll();
+        }
 
         switch (currBtn) {
             case BTN_ROTATION_LOCK:
                 brakeRotationActuator.setBrake(HIGH);
+                topLed.onRGB(HIGH, HIGH, HIGH);
                 break;
             case BTN_LEFT:
                 if(!sensorLeft.isClosed()) {
@@ -143,83 +173,43 @@ void RunModule::run() {
 
 void RunModule::disableAll() {
     brakeRotationActuator.setBrake(LOW);
+    stepperYY.setEnabled(HIGH);
+    stepperZZ.setEnabled(HIGH);
     stepperYY.setSpeed(0);
     stepperZZ.setSpeed(0);
-    linearActuator.setEnabled(LOW);
     pushPullMotor.setEnabled(LOW);
 }
 
 void RunModule::startup() {
+//  	onOffButton.init();
+    topLed.onRGB(HIGH, LOW, HIGH);
+    handRGBLed.onRGB(HIGH, HIGH, LOW);
     stepperYY.setEnabled(HIGH);
     stepperZZ.setEnabled(HIGH);
     pushPullMotor.setEnabled(HIGH);
     pushPullMotor.setDirection(LOW);
+    brakeRotationActuator.setBrake(LOW);
     delay(2000);
 }
 
-//
-//
-//void TestsModule::testLinearActuator() {
-//
-//    delay(2000);
-//    linearActuator.setEnabled(HIGH);
-//    linearActuator.setDirection(LOW);
-//    delay(2000);
-//    linearActuator.setEnabled(HIGH);
-//    linearActuator.setDirection(HIGH);
-//    delay(2000);
-//
-//    linearActuator.setEnabled(LOW);
-//}
-//
-//void TestsModule::testInductiveSensor() {
-//    if(sensor.isClosed()) {
-//        leds[2].on();
-//        Serial.println("Object Detected");
-//    } else {
-//        leds[2].off();
-//        Serial.println("Object Not Detected");
+
+void RunModule::turnAllOff() {
+    stepperYY.setEnabled(LOW);
+    stepperZZ.setEnabled(LOW);
+//	isMoldBraked = brakeMoldActuator.isBraked();
+//    brakeMoldActuator.setBrake(LOW);
+	disableAll();
+    for(int i=0;i<7;i++) {
+      handController.setButtonLedOff(i);
+    }
+    topLed.offRGB();
+    handRGBLed.offRGB();
+}
+
+void RunModule::turnAllOn() {
+    stepperYY.setEnabled(HIGH);
+    stepperZZ.setEnabled(HIGH);
+//	if(isMoldBraked) {
+//    	brakeMoldActuator.setBrake(HIGH);
 //    }
-//}
-//
-//
-//void TestsModule::testRGBLeds() {
-//
-//    topLed.onRGB(HIGH, LOW, LOW);
-//    //handRGBLed.onRGB(HIGH, LOW, LOW);
-//    delay(1000);
-//    topLed.onRGB(LOW, HIGH, LOW);
-//    //handRGBLed.onRGB(LOW, HIGH, LOW);
-//    delay(1000);
-//    topLed.onRGB(LOW, LOW, HIGH);
-//    //handRGBLed.onRGB(LOW, LOW, HIGH);
-//    delay(1000);
-//    topLed.onRGB(HIGH, HIGH, LOW);
-//    //handRGBLed.onRGB(HIGH, HIGH, LOW);
-//    delay(1000);
-//    topLed.onRGB(LOW, HIGH, HIGH);
-//    //handRGBLed.onRGB(LOW, HIGH, HIGH);
-//    delay(1000);
-//    topLed.onRGB(HIGH, LOW, HIGH);
-//    //handRGBLed.onRGB(HIGH, LOW, HIGH);
-//    delay(1000);
-//    topLed.onRGB(HIGH, HIGH, HIGH);
-//    //handRGBLed.onRGB(HIGH, HIGH, HIGH);
-//    delay(1000);
-//    topLed.offRGB();
-//    //handRGBLed.offRGB();
-//    delay(1000);
-//}
-//
-//
-//void TestsModule::testHandLeds() {
-//
-//    handLeds[0].onRGB(HIGH, HIGH, HIGH);
-//    delay(1000);
-//    handLeds[0].offRGB();
-//    for (int i = 1; i < 7; i++) {
-//      handLeds[i].on();
-//      delay(1000);
-//      handLeds[i].off();
-//    }
-//}
+}

@@ -28,5 +28,6 @@ class Button {
     void setLedOn();
     void setLedOff();
     int getCode();
+    void updateState();
 };
 #endif
