@@ -20,6 +20,7 @@
 #define BTN_GRAB_MOLD         4
 #define BTN_RIGHT             5
 #define BTN_DOWN              6
+#define LED_CYCLE_TIME 1000        // 200ms per RGB LED
 
 #define ZZ_SPEED    60
 #define YY_SPEED    32000
@@ -58,6 +59,11 @@ int currBtn = 0;
 int prevBtn = 0;
 Button *button;
 bool isMoldBraked = false;
+bool isBlinking = false;
+unsigned long previousTime = 0;
+unsigned long currentTime = 0;
+int ledBlinkState = LOW;
+
 
 void RunModule::run() {
 ////
@@ -159,12 +165,33 @@ void RunModule::run() {
         handController.setButtonLedOn(BTN_GRAB_MOLD);
     }
 
-    if(pushPullMotor.getDirection() == HIGH) {
+    if(pushPullMotor.getDirection() == HIGH && !sensorMold.isClosed()) {
         topLed.onRGB(LOW, HIGH, LOW);
         handRGBLed.onRGB(LOW, HIGH,LOW);
-    } else {
-        topLed.onRGB(HIGH, LOW, LOW );
+    }
+
+    if(pushPullMotor.getDirection() == LOW && !sensorMold.isClosed()) {
+   		topLed.onRGB(HIGH, LOW, LOW );
         handRGBLed.onRGB(HIGH, LOW, LOW);
+    }
+
+    if(sensorMold.isClosed()) {
+		currentTime = millis();
+		if(currentTime - previousTime >= LED_CYCLE_TIME) {
+			previousTime = currentTime;
+			if (ledBlinkState == LOW) {
+                ledBlinkState = HIGH;
+      			topLed.onRGB(HIGH, HIGH, LOW);
+				handRGBLed.onRGB(HIGH, HIGH, HIGH);
+			} else {
+                ledBlinkState = LOW;
+      			topLed.offRGB();
+      			handRGBLed.offRGB();
+			}
+        }
+
+    } else {
+      isBlinking = false;
     }
 
     prevBtn = currBtn;

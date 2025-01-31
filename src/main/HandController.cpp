@@ -109,11 +109,17 @@ int HandController::getNumberOfClosedButtons() {
 
 Button* HandController::getClosedButton() {
 
+  buttons[0].setLedOff();
+  buttons[1].setLedOff();
+  buttons[2].setLedOff();
+  buttons[4].setLedOff();
+  buttons[5].setLedOff();
+  buttons[6].setLedOff();
+
+
     for(int i=0; i<8; i++) {
         if(buttons[i].isPressed) {
             return &buttons[i];
-        } else {
-            buttons[i].setLedOff();
         }
     }
 
